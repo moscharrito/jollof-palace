@@ -57,6 +57,9 @@ const sessionStorageMock = {
 // Mock fetch
 global.fetch = vi.fn();
 
+// Mock axios
+vi.mock('../services/api');
+
 // Mock console methods to reduce noise in tests
 global.console = {
   ...console,

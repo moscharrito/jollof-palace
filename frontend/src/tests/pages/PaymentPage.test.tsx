@@ -32,7 +32,7 @@ vi.mock('../../components/payment/PaymentMethodSelector', () => ({
 }));
 
 vi.mock('../../components/payment/StripePaymentForm', () => ({
-  default: ({ order, onSuccess, onError }: any) => (
+  default: ({ onSuccess, onError }: any) => (
     <div data-testid="stripe-payment-form">
       <button onClick={() => onSuccess('stripe-tx-123', 'stripe-ref-123')}>
         Pay with Stripe
@@ -45,7 +45,7 @@ vi.mock('../../components/payment/StripePaymentForm', () => ({
 }));
 
 vi.mock('../../components/payment/PayPalPaymentButton', () => ({
-  default: ({ order, onSuccess, onError }: any) => (
+  default: ({ onSuccess }: any) => (
     <div data-testid="paypal-payment-button">
       <button onClick={() => onSuccess('paypal-tx-123', 'paypal-ref-123')}>
         Pay with PayPal

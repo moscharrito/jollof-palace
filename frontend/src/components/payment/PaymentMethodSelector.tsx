@@ -46,7 +46,7 @@ const PaymentMethodSelector = ({
   const isApplePayAvailable = () => {
     return (
       window.ApplePaySession &&
-      ApplePaySession.canMakePayments()
+      (window as any).ApplePaySession.canMakePayments()
     );
   };
 

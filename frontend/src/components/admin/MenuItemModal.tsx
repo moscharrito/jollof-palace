@@ -15,7 +15,7 @@ interface FormData {
   name: string;
   description: string;
   price: string;
-  category: 'MAIN' | 'SIDE' | 'COMBO';
+  category: 'main' | 'side' | 'combo';
   imageUrl: string;
   preparationTime: string;
   ingredients: string[];
@@ -32,7 +32,7 @@ const MenuItemModal = ({ item, isEditing, onClose, onSave }: MenuItemModalProps)
     name: '',
     description: '',
     price: '',
-    category: 'MAIN',
+    category: 'main',
     imageUrl: '',
     preparationTime: '',
     ingredients: [],
@@ -218,9 +218,9 @@ const MenuItemModal = ({ item, isEditing, onClose, onSave }: MenuItemModalProps)
                 onChange={(e) => handleInputChange('category', e.target.value)}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500"
               >
-                <option value="MAIN">Main Dish</option>
-                <option value="SIDE">Side Dish</option>
-                <option value="COMBO">Combo Meal</option>
+                <option value="main">Main Dish</option>
+                <option value="side">Side Dish</option>
+                <option value="combo">Combo Meal</option>
               </select>
             </div>
           </div>

@@ -53,7 +53,7 @@ const GooglePayButton = ({
       return;
     }
 
-    const client = new google.payments.api.PaymentsClient({
+    const client = new (window as any).google.payments.api.PaymentsClient({
       environment: import.meta.env.VITE_GOOGLE_PAY_ENVIRONMENT || 'TEST',
     });
 

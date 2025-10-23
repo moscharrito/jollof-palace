@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { render, screen, act, waitFor } from '@testing-library/react';
 import { vi, describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { AuthProvider, useAuth } from '../../contexts/AuthContext';
@@ -232,7 +233,7 @@ describe('AuthContext', () => {
 
       const InvalidLoginComponent = () => {
         const auth = useAuth();
-        const [error, setError] = React.useState<string | null>(null);
+        const [error, setError] = useState<string | null>(null);
 
         const handleLogin = async () => {
           try {

@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { loadStripe, Stripe, StripeElements } from '@stripe/stripe-js';
+import { loadStripe } from '@stripe/stripe-js';
 import {
   Elements,
   CardElement,
@@ -7,7 +7,7 @@ import {
   useElements,
 } from '@stripe/react-stripe-js';
 import { Order } from '@food-ordering/shared';
-import { toast } from 'react-hot-toast';
+
 import api from '../../services/api';
 
 // Load Stripe

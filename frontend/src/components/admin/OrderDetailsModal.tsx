@@ -4,7 +4,7 @@ import {
   PhoneIcon,
   MapPinIcon,
   ClockIcon,
-  CurrencyDollarIcon,
+
   UserIcon,
   EnvelopeIcon,
   DocumentTextIcon

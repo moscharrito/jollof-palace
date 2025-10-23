@@ -3,7 +3,7 @@ export interface MenuItem {
   name: string;
   description: string;
   price: number; // Price in cents
-  category: 'MAIN' | 'SIDE' | 'COMBO';
+  category: 'main' | 'side' | 'combo';
   imageUrl: string;
   isAvailable: boolean;
   preparationTime: number; // Time in minutes
@@ -17,15 +17,15 @@ export interface MenuItem {
   fiber?: number;
   sodium?: number;
   
-  createdAt: string;
-  updatedAt: string;
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 export interface CreateMenuItemData {
   name: string;
   description: string;
   price: number;
-  category: 'MAIN' | 'SIDE' | 'COMBO';
+  category: 'main' | 'side' | 'combo';
   imageUrl: string;
   preparationTime: number;
   ingredients: string[];

@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { toast } from 'react-hot-toast';
-import { XMarkIcon, ChartBarIcon, TrendingUpIcon, TrendingDownIcon } from '@heroicons/react/24/outline';
+import { XMarkIcon, ChartBarIcon, ArrowTrendingUpIcon, ArrowTrendingDownIcon } from '@heroicons/react/24/outline';
 import { menuService } from '../../services/menuService';
 
 interface MenuItemAnalytics {
@@ -91,9 +91,9 @@ const MenuAnalyticsModal = ({ onClose }: MenuAnalyticsModalProps) => {
   const getTrendIcon = (trend: string) => {
     switch (trend) {
       case 'up':
-        return <TrendingUpIcon className="h-4 w-4 text-green-500" />;
+        return <ArrowTrendingUpIcon className="h-4 w-4 text-green-500" />;
       case 'down':
-        return <TrendingDownIcon className="h-4 w-4 text-red-500" />;
+        return <ArrowTrendingDownIcon className="h-4 w-4 text-red-500" />;
       default:
         return <div className="h-4 w-4 bg-gray-300 rounded-full" />;
     }

@@ -2,7 +2,7 @@ import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { BrowserRouter } from 'react-router-dom';
 import { vi } from 'vitest';
-import { toast } from 'react-hot-toast';
+
 import OrderTrackingPage from '../../pages/OrderTrackingPage';
 import { Order } from '@food-ordering/shared';
 
@@ -43,7 +43,7 @@ const mockOrder: Order = {
       },
       quantity: 2,
       unitPrice: 1500,
-      totalPrice: 3000,
+      subtotal: 3000,
       customizations: ['Extra spicy'],
     },
   ],
@@ -86,8 +86,6 @@ const renderWithRouter = (component: React.ReactElement) => {
 };
 
 describe('OrderTrackingPage - Real-time Features', () => {
-  const mockToast = toast as any;
-
   beforeEach(() => {
     vi.clearAllMocks();
     

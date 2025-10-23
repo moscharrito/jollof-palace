@@ -4,7 +4,6 @@ import { BrowserRouter } from 'react-router-dom';
 import { vi } from 'vitest';
 import { toast } from 'react-hot-toast';
 import CheckoutPage from '../../pages/CheckoutPage';
-import PaymentPage from '../../pages/PaymentPage';
 import { CartProvider } from '../../contexts/CartContext';
 import api from '../../services/api';
 
@@ -172,7 +171,6 @@ describe('Complete Payment Flow Integration', () => {
   });
 
   it('should handle payment processing on payment page', async () => {
-    const user = userEvent.setup();
     
     // Mock payment page with order in state
     vi.doMock('react-router-dom', async () => {

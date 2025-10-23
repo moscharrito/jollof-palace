@@ -1,11 +1,8 @@
 import { useState, useEffect } from 'react';
 import { 
   ClockIcon, 
-  CheckCircleIcon, 
-  XCircleIcon,
   MagnifyingGlassIcon,
   FunnelIcon,
-  EllipsisVerticalIcon,
   PhoneIcon,
   MapPinIcon,
   CurrencyDollarIcon
@@ -97,24 +94,7 @@ const OrderManagementPage = () => {
     );
   });
 
-  const getStatusColor = (status: OrderStatus) => {
-    switch (status) {
-      case 'PENDING':
-        return 'text-yellow-600 bg-yellow-50';
-      case 'CONFIRMED':
-        return 'text-blue-600 bg-blue-50';
-      case 'PREPARING':
-        return 'text-orange-600 bg-orange-50';
-      case 'READY':
-        return 'text-green-600 bg-green-50';
-      case 'COMPLETED':
-        return 'text-gray-600 bg-gray-50';
-      case 'CANCELLED':
-        return 'text-red-600 bg-red-50';
-      default:
-        return 'text-gray-600 bg-gray-50';
-    }
-  };
+
 
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat('en-NG', {

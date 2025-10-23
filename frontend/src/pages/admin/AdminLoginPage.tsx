@@ -188,7 +188,7 @@ const AdminLoginPage = () => {
                   className="font-medium text-red-600 hover:text-red-500"
                   onClick={(e) => {
                     e.preventDefault();
-                    toast.info('Please contact your administrator for password reset');
+                    toast('Please contact your administrator for password reset');
                   }}
                 >
                   Forgot your password?

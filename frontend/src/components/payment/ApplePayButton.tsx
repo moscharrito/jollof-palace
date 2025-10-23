@@ -30,7 +30,7 @@ const ApplePayButton = ({
 
   const checkApplePayAvailability = () => {
     if (window.ApplePaySession) {
-      const canMakePayments = ApplePaySession.canMakePayments();
+      const canMakePayments = (window as any).ApplePaySession.canMakePayments();
       setIsAvailable(canMakePayments);
     }
   };
@@ -75,7 +75,7 @@ const ApplePayButton = ({
         });
       }
 
-      const session = new ApplePaySession(3, paymentRequest);
+      const session = new (window as any).ApplePaySession(3, paymentRequest);
 
       session.onvalidatemerchant = async (event: any) => {
         try {
@@ -102,15 +102,15 @@ const ApplePayButton = ({
           const result = response.data.data;
           
           if (result.success) {
-            session.completePayment(ApplePaySession.STATUS_SUCCESS);
+            session.completePayment((window as any).ApplePaySession.STATUS_SUCCESS);
             onSuccess(result.transactionId, result.reference);
           } else {
-            session.completePayment(ApplePaySession.STATUS_FAILURE);
+            session.completePayment((window as any).ApplePaySession.STATUS_FAILURE);
             onError(result.message || 'Apple Pay payment failed');
           }
         } catch (error: any) {
           console.error('Apple Pay payment processing failed:', error);
-          session.completePayment(ApplePaySession.STATUS_FAILURE);
+          session.completePayment((window as any).ApplePaySession.STATUS_FAILURE);
           onError('Apple Pay payment processing failed. Please try again.');
         }
       };

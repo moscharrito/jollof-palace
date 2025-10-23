@@ -138,7 +138,7 @@ const MenuItemModal = ({ item, isOpen, onClose }: MenuItemModalProps) => {
             {/* Image */}
             <div className="aspect-video bg-gradient-to-br from-red-400 to-orange-500 rounded-lg flex items-center justify-center mb-6">
               <span className="text-white text-8xl">
-                {item.category === 'MAIN' ? '🍚' : 
+                {item.category === 'main' ? '🍚' : 
                  item.name.toLowerCase().includes('chicken') ? '🍗' : 
                  item.name.toLowerCase().includes('plantain') ? '🍌' : '🍽️'}
               </span>

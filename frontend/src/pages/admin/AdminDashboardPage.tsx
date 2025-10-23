@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+
 import { 
   ClipboardDocumentListIcon, 
   CurrencyDollarIcon, 
@@ -7,13 +7,7 @@ import {
   ChartBarIcon,
   ClockIcon,
   CheckCircleIcon,
-  ExclamationTriangleIcon,
-  PlusIcon,
-  EyeIcon,
-  Cog6ToothIcon,
-  BellIcon,
-  ArrowTrendingUpIcon,
-  ArrowTrendingDownIcon
+
 } from '@heroicons/react/24/outline';
 import LoadingSpinner from '../../components/ui/LoadingSpinner';
 
@@ -39,67 +33,14 @@ interface RecentOrder {
   estimatedReadyTime?: string;
 }
 
-interface MenuItemStatus {
-  id: string;
-  name: string;
-  isAvailable: boolean;
-  lowStock?: boolean;
-  category: string;
-}
 
-interface QuickAction {
-  title: string;
-  description: string;
-  href: string;
-  icon: React.ComponentType<React.SVGProps<SVGSVGElement>>;
-  color: string;
-}
-
-interface Alert {
-  id: string;
-  type: 'warning' | 'error' | 'info';
-  title: string;
-  message: string;
-  time: string;
-}
 
 const AdminDashboardPage = () => {
   const [stats, setStats] = useState<DashboardStats | null>(null);
   const [recentOrders, setRecentOrders] = useState<RecentOrder[]>([]);
-  const [menuItems, setMenuItems] = useState<MenuItemStatus[]>([]);
-  const [alerts, setAlerts] = useState<Alert[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
-  const quickActions: QuickAction[] = [
-    {
-      title: 'Add Menu Item',
-      description: 'Create a new dish',
-      href: '/admin/menu?action=add',
-      icon: PlusIcon,
-      color: 'bg-green-500 hover:bg-green-600'
-    },
-    {
-      title: 'View Orders',
-      description: 'Manage all orders',
-      href: '/admin/orders',
-      icon: EyeIcon,
-      color: 'bg-blue-500 hover:bg-blue-600'
-    },
-    {
-      title: 'Analytics',
-      description: 'View reports',
-      href: '/admin/analytics',
-      icon: ChartBarIcon,
-      color: 'bg-purple-500 hover:bg-purple-600'
-    },
-    {
-      title: 'Settings',
-      description: 'System config',
-      href: '/admin/settings',
-      icon: Cog6ToothIcon,
-      color: 'bg-gray-500 hover:bg-gray-600'
-    }
-  ];
+
 
   useEffect(() => {
     // Mock data for now - will be replaced with actual API calls
@@ -167,39 +108,7 @@ const AdminDashboardPage = () => {
         }
       ]);
 
-      // Mock menu items status
-      setMenuItems([
-        { id: '1', name: 'Jollof Rice with Chicken', isAvailable: true, category: 'MAIN' },
-        { id: '2', name: 'Pepper Beef', isAvailable: true, category: 'MAIN' },
-        { id: '3', name: 'Dodo (Fried Plantain)', isAvailable: false, category: 'SIDE' },
-        { id: '4', name: 'Moi Moi', isAvailable: true, lowStock: true, category: 'SIDE' },
-        { id: '5', name: 'Jollof Combo Special', isAvailable: true, category: 'COMBO' }
-      ]);
 
-      // Mock alerts
-      setAlerts([
-        {
-          id: '1',
-          type: 'warning',
-          title: 'Low Stock Alert',
-          message: 'Moi Moi ingredients running low',
-          time: '5 minutes ago'
-        },
-        {
-          id: '2',
-          type: 'info',
-          title: 'New Order',
-          message: 'Order JP-005 received from David Brown',
-          time: '2 minutes ago'
-        },
-        {
-          id: '3',
-          type: 'error',
-          title: 'Item Unavailable',
-          message: 'Dodo marked as unavailable',
-          time: '10 minutes ago'
-        }
-      ]);
       
       setIsLoading(false);
     };

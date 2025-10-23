@@ -138,7 +138,7 @@ describe('useOrderTracking', () => {
   });
 
   it('should handle order status updates with notifications', async () => {
-    const { result } = renderHook(() => useOrderTracking('order-123'));
+    renderHook(() => useOrderTracking('order-123'));
 
     const statusUpdate = {
       orderId: 'order-123',
@@ -290,7 +290,7 @@ describe('useOrderTracking', () => {
   it('should handle reconnection attempts', async () => {
     vi.useFakeTimers();
     
-    const { result } = renderHook(() => useOrderTracking('order-123'));
+    renderHook(() => useOrderTracking('order-123'));
 
     // Simulate disconnect that should trigger reconnection
     act(() => {

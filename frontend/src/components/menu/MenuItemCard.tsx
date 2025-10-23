@@ -44,7 +44,7 @@ const MenuItemCard = ({ item, onViewDetails, showQuickAdd = true }: MenuItemCard
   };
 
   const getItemEmoji = (item: MenuItem) => {
-    if (item.category === 'MAIN') return '🍚';
+    if (item.category === 'main') return '🍚';
     if (item.name.toLowerCase().includes('chicken')) return '🍗';
     if (item.name.toLowerCase().includes('beef')) return '🥩';
     if (item.name.toLowerCase().includes('goat')) return '🍖';

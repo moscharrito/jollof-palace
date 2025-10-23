@@ -282,12 +282,12 @@ const OrderTrackingPage = () => {
             {/* Estimated Time */}
             <div className="card p-6">
               <h3 className="text-lg font-semibold text-gray-900 mb-4">
-                Estimated {order.orderType === 'DELIVERY' ? 'Delivery' : 'Pickup'} Time
+                Estimated {order.orderType === 'delivery' ? 'Delivery' : 'Pickup'} Time
               </h3>
               
               <div className="flex items-center space-x-4">
                 <div className="text-3xl">
-                  {order.orderType === 'DELIVERY' ? '🚚' : '🏪'}
+                  {order.orderType === 'delivery' ? '🚚' : '🏪'}
                 </div>
                 <div>
                   <div className="text-2xl font-bold text-red-600">
@@ -347,7 +347,7 @@ const OrderTrackingPage = () => {
                       )}
                     </div>
                     <div className="font-medium text-gray-900">
-                      {formatPrice(item.totalPrice)}
+                      {formatPrice(item.subtotal)}
                     </div>
                   </div>
                 ))}

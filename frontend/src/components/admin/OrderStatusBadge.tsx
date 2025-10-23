@@ -93,11 +93,11 @@ const OrderStatusBadge = ({ status, onStatusChange, showDropdown = false }: Orde
               Change to:
             </div>
             {availableStatuses.map((statusOption) => {
-              const optionConfig = statusConfig[statusOption];
+              const optionConfig = statusConfig[statusOption as keyof typeof statusConfig];
               return (
                 <button
                   key={statusOption}
-                  onClick={() => handleStatusChange(statusOption)}
+                  onClick={() => handleStatusChange(statusOption as OrderStatus)}
                   className="w-full text-left px-3 py-2 text-xs hover:bg-gray-50 transition-colors"
                 >
                   <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${optionConfig.color}`}>
