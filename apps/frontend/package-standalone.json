@@ -1,0 +1,49 @@
+{
+  "name": "jollof-palace-frontend",
+  "version": "1.0.0",
+  "description": "Frontend web application for Jollof Palace food ordering system",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview",
+    "test": "vitest",
+    "test:ui": "vitest --ui",
+    "test:coverage": "vitest --coverage"
+  },
+  "dependencies": {
+    "@heroicons/react": "^2.0.18",
+    "@hookform/resolvers": "^3.1.1",
+    "@stripe/react-stripe-js": "^2.1.1",
+    "@stripe/stripe-js": "^2.1.0",
+    "@tanstack/react-query": "^4.32.0",
+    "@tanstack/react-query-devtools": "^4.32.0",
+    "@types/qrcode": "^1.5.5",
+    "axios": "^1.4.0",
+    "qrcode": "^1.5.4",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-hook-form": "^7.45.2",
+    "react-hot-toast": "^2.4.1",
+    "react-router-dom": "^6.14.2",
+    "socket.io-client": "^4.7.2",
+    "yup": "^1.2.0"
+  },
+  "devDependencies": {
+    "@testing-library/jest-dom": "^5.17.0",
+    "@testing-library/react": "^13.4.0",
+    "@testing-library/user-event": "^14.4.3",
+    "@types/react": "^18.2.15",
+    "@types/react-dom": "^18.2.7",
+    "@vitejs/plugin-react": "^4.0.3",
+    "@vitest/ui": "^0.34.1",
+    "autoprefixer": "^10.4.14",
+    "jsdom": "^27.0.1",
+    "postcss": "^8.4.27",
+    "tailwindcss": "^3.3.3",
+    "typescript": "^5.1.6",
+    "vite": "^4.4.5",
+    "vite-plugin-pwa": "^0.16.4",
+    "vitest": "^0.34.1"
+  }
+}
