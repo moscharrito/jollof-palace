@@ -1,5 +1,5 @@
 import { useQuery, UseQueryResult } from '@tanstack/react-query';
-import { MenuItem } from '@food-ordering/shared';
+import { MenuItem } from '../types';
 import { MenuService, MenuFilters } from '../services/menuService';
 
 /**

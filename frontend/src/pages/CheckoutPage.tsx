@@ -4,7 +4,7 @@ import { ArrowLeftIcon } from '@heroicons/react/24/outline';
 import { toast } from 'react-hot-toast';
 
 import { useCart } from '../hooks/useCart';
-import { CustomerInfo, CreateOrderRequest } from '@food-ordering/shared';
+import { CustomerInfo, CreateOrderRequest, PaymentMethod } from '../types';
 import MultiStepCheckout from '../components/checkout/MultiStepCheckout';
 import api from '../services/api';
 
@@ -33,8 +33,11 @@ const CheckoutPage = () => {
           menuItemId: item.menuItemId,
           quantity: item.quantity,
           customizations: item.customizations,
+          price: item.price || 0,
+          subtotal: item.price * item.quantity,
         })),
         orderType: orderData.orderType,
+        paymentMethod: PaymentMethod.PENDING,
         specialInstructions: orderData.specialInstructions,
       };
 

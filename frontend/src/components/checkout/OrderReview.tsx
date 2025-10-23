@@ -1,4 +1,4 @@
-import { CustomerInfo } from '@food-ordering/shared';
+import { CustomerInfo } from '../../types';
 import { CartItem } from '../../contexts/CartContext';
 
 interface OrderReviewProps {

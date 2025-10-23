@@ -124,6 +124,8 @@ export function getOrderStatusText(status: OrderStatus): string {
     confirmed: 'Order Confirmed',
     preparing: 'Being Prepared',
     ready: 'Ready for Pickup/Delivery',
+    out_for_delivery: 'Out for Delivery',
+    delivered: 'Delivered',
     completed: 'Completed',
     cancelled: 'Cancelled',
   };
@@ -154,10 +156,12 @@ export function canUpdateOrderStatus(
   newStatus: OrderStatus
 ): boolean {
   const statusFlow: Record<OrderStatus, OrderStatus[]> = {
-    pending: ['confirmed', 'cancelled'],
-    confirmed: ['preparing', 'cancelled'],
-    preparing: ['ready', 'cancelled'],
-    ready: ['completed'],
+    pending: [OrderStatus.CONFIRMED, OrderStatus.CANCELLED],
+    confirmed: [OrderStatus.PREPARING, OrderStatus.CANCELLED],
+    preparing: [OrderStatus.READY, OrderStatus.CANCELLED],
+    ready: [OrderStatus.OUT_FOR_DELIVERY, OrderStatus.COMPLETED],
+    out_for_delivery: [OrderStatus.DELIVERED],
+    delivered: [OrderStatus.COMPLETED],
     completed: [],
     cancelled: [],
   };

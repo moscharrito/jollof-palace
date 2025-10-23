@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { Order } from '@food-ordering/shared';
+import { Order } from '../../types';
 import api from '../../services/api';
 
 interface PayPalPaymentButtonProps {

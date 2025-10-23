@@ -1,4 +1,4 @@
-import { PaymentMethod } from '@food-ordering/shared';
+import { PaymentMethod } from '../../types';
 
 interface PaymentMethodSelectorProps {
   selectedMethod: PaymentMethod;

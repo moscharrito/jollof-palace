@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { io, Socket } from 'socket.io-client';
-import { Order, OrderStatus } from '@food-ordering/shared';
+import { Order, OrderStatus } from '../types';
 import { toast } from 'react-hot-toast';
 
 interface OrderUpdate {
@@ -114,8 +114,12 @@ export const useOrderTracking = (orderId: string | null) => {
           return {
             ...prevOrder,
             status: update.status,
-            estimatedReadyTime: update.estimatedReadyTime ? new Date(update.estimatedReadyTime) : prevOrder.estimatedReadyTime,
-            actualReadyTime: update.actualReadyTime ? new Date(update.actualReadyTime) : prevOrder.actualReadyTime,
+            estimatedReadyTime: update.estimatedReadyTime ? 
+              (typeof update.estimatedReadyTime === 'string' ? update.estimatedReadyTime : update.estimatedReadyTime.toISOString()) 
+              : prevOrder.estimatedReadyTime,
+            actualReadyTime: update.actualReadyTime ? 
+              (typeof update.actualReadyTime === 'string' ? update.actualReadyTime : update.actualReadyTime.toISOString()) 
+              : prevOrder.actualReadyTime,
           };
         });
       }

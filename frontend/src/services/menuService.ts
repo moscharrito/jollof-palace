@@ -1,4 +1,5 @@
-import { MenuItem, ApiResponse } from '@food-ordering/shared';
+import { ApiResponse } from '../types';
+import { MenuItem } from '../types/menu';
 import api from './api';
 import { 
   CreateMenuItemData, 

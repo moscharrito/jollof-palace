@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { CustomerInfo } from '@food-ordering/shared';
+import { CustomerInfo } from '../../types';
 import { CartItem } from '../../contexts/CartContext';
 import CheckoutForm from './CheckoutForm';
 import OrderReview from './OrderReview';
@@ -31,9 +31,18 @@ const MultiStepCheckout = ({
   const [isFormValid, setIsFormValid] = useState(false);
   
   const [customerInfo, setCustomerInfo] = useState<CustomerInfo>({
+    firstName: '',
+    lastName: '',
     name: '',
     phone: '',
     email: '',
+    address: {
+      street: '',
+      city: '',
+      state: '',
+      zipCode: '',
+      country: '',
+    },
   });
   
   const [orderType, setOrderType] = useState<'pickup' | 'delivery'>('delivery');

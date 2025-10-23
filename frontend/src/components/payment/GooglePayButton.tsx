@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { Order } from '@food-ordering/shared';
+import { Order } from '../../types';
 import api from '../../services/api';
 
 interface GooglePayButtonProps {
@@ -138,7 +138,7 @@ const GooglePayButton = ({
           currencyCode: 'USD',
           displayItems: [
             ...order.items.map(item => ({
-              label: `${item.menuItem.name} (x${item.quantity})`,
+              label: `${item.menuItem?.name || 'Item'} (x${item.quantity})`,
               type: 'LINE_ITEM',
               price: (item.subtotal / 100).toFixed(2),
             })),

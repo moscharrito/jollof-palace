@@ -3,7 +3,7 @@ import { useParams, useLocation, useNavigate } from 'react-router-dom';
 import { ArrowLeftIcon } from '@heroicons/react/24/outline';
 import { toast } from 'react-hot-toast';
 
-import { Order, PaymentMethod } from '@food-ordering/shared';
+import { Order, PaymentMethod } from '../types';
 import PaymentMethodSelector from '../components/payment/PaymentMethodSelector';
 import StripePaymentForm from '../components/payment/StripePaymentForm';
 import PayPalPaymentButton from '../components/payment/PayPalPaymentButton';
@@ -18,7 +18,7 @@ const PaymentPage = () => {
   const navigate = useNavigate();
   
   const [order, setOrder] = useState<Order | null>(location.state?.order || null);
-  const [selectedPaymentMethod, setSelectedPaymentMethod] = useState<PaymentMethod>('card');
+  const [selectedPaymentMethod, setSelectedPaymentMethod] = useState<PaymentMethod>(PaymentMethod.CARD);
   const [isLoading, setIsLoading] = useState(!order);
   const [isProcessing, setIsProcessing] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -181,7 +181,7 @@ const PaymentPage = () => {
                 </div>
               )}
 
-              {selectedPaymentMethod === 'card' && (
+              {selectedPaymentMethod === PaymentMethod.CARD && (
                 <StripePaymentForm
                   order={order}
                   onSuccess={handlePaymentSuccess}

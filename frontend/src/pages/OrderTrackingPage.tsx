@@ -253,7 +253,7 @@ const OrderTrackingPage = () => {
                         {step.isCurrent && (
                           <div className="text-sm text-gray-600 mt-1">
                             {step.id === 'preparing' && (
-                              <>Estimated ready time: {formatTime(new Date(order.estimatedReadyTime))}</>
+                              <>Estimated ready time: {order.estimatedReadyTime ? formatTime(new Date(order.estimatedReadyTime)) : 'TBD'}</>
                             )}
                             {step.id === 'ready' && order.orderType === 'delivery' && (
                               <>Your order is on the way!</>
@@ -293,7 +293,7 @@ const OrderTrackingPage = () => {
                   <div className="text-2xl font-bold text-red-600">
                     {order.status === 'completed' && order.actualReadyTime 
                       ? formatTime(new Date(order.actualReadyTime))
-                      : formatTime(new Date(order.estimatedReadyTime))
+                      : (order.estimatedReadyTime ? formatTime(new Date(order.estimatedReadyTime)) : 'TBD')
                     }
                   </div>
                   <div className="text-gray-600">
@@ -335,7 +335,7 @@ const OrderTrackingPage = () => {
                   <div key={index} className="flex justify-between text-sm">
                     <div>
                       <div className="font-medium text-gray-900">
-                        {item.menuItem.name}
+                        {item.menuItem?.name || 'Item'}
                       </div>
                       <div className="text-gray-600">
                         Qty: {item.quantity}

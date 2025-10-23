@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Order } from '@food-ordering/shared';
+import { Order } from '../../types';
 import api from '../../services/api';
 
 interface ApplePayButtonProps {
@@ -54,7 +54,7 @@ const ApplePayButton = ({
           amount: (order.total / 100).toFixed(2),
         },
         lineItems: order.items.map(item => ({
-          label: `${item.menuItem.name} (x${item.quantity})`,
+          label: `${item.menuItem?.name || 'Item'} (x${item.quantity})`,
           amount: (item.subtotal / 100).toFixed(2),
         })),
       };

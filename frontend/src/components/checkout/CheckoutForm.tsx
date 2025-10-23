@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { CustomerInfo, Address } from '@food-ordering/shared';
+import { CustomerInfo, Address } from '../../types';
 import { validateEmail, validatePhone, validateRequired, formatPhoneNumber } from '../../utils/validation';
 
 interface CheckoutFormProps {
@@ -101,7 +101,9 @@ const CheckoutForm = ({
         street: customerInfo.deliveryAddress?.street || '',
         city: customerInfo.deliveryAddress?.city || '',
         state: customerInfo.deliveryAddress?.state || '',
+        zipCode: customerInfo.deliveryAddress?.zipCode || '',
         postalCode: customerInfo.deliveryAddress?.postalCode || '',
+        country: customerInfo.deliveryAddress?.country || '',
         landmark: customerInfo.deliveryAddress?.landmark || '',
         ...customerInfo.deliveryAddress,
         [field]: value,
