@@ -1,0 +1,190 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model MenuItem {
+  id              String   @id @default(cuid())
+  name            String
+  description     String
+  price           Int      // Price in cents (smallest currency unit)
+  category        Category
+  imageUrl        String
+  isAvailable     Boolean  @default(true)
+  preparationTime Int      // Time in minutes
+  ingredients     String[] // Array of ingredient names
+  
+  // Nutritional information (optional)
+  calories        Int?
+  protein         Float?
+  carbs           Float?
+  fat             Float?
+  fiber           Float?
+  sodium          Float?
+  
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  
+  // Relations
+  orderItems      OrderItem[]
+  
+  @@map("menu_items")
+}
+
+model Order {
+  id                   String      @id @default(cuid())
+  orderNumber          String      @unique
+  
+  // Customer information
+  customerName         String
+  customerPhone        String
+  customerEmail        String?
+  
+  // Delivery information
+  orderType            OrderType
+  deliveryStreet       String?
+  deliveryCity         String?
+  deliveryState        String?
+  deliveryPostalCode   String?
+  deliveryLandmark     String?
+  
+  // Order details
+  subtotal             Int         // Amount in cents
+  tax                  Int         // Tax amount in cents
+  deliveryFee          Int         @default(0) // Delivery fee in cents
+  total                Int         // Total amount in cents
+  
+  status               OrderStatus @default(PENDING)
+  estimatedReadyTime   DateTime
+  actualReadyTime      DateTime?
+  specialInstructions  String?
+  
+  createdAt            DateTime    @default(now())
+  updatedAt            DateTime    @updatedAt
+  
+  // Relations
+  items                OrderItem[]
+  payments             Payment[]
+  
+  @@map("orders")
+}
+
+model OrderItem {
+  id             String   @id @default(cuid())
+  orderId        String
+  menuItemId     String
+  quantity       Int
+  unitPrice      Int      // Price per unit in cents
+  totalPrice     Int      // Total for this item in cents (quantity * unitPrice)
+  customizations String[] // Array of customization notes
+  
+  createdAt      DateTime @default(now())
+  
+  // Relations
+  order          Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  menuItem       MenuItem @relation(fields: [menuItemId], references: [id])
+  
+  @@map("order_items")
+}
+
+model Payment {
+  id            String        @id @default(cuid())
+  orderId       String
+  amount        Int           // Amount in cents
+  currency      String        @default("USD")
+  method        PaymentMethod
+  status        PaymentStatus @default(PENDING)
+  
+  // Payment provider details
+  transactionId String?       // External transaction ID
+  reference     String        @unique // Internal payment reference
+  
+  // Provider-specific data
+  metadata      Json?         // Store provider-specific metadata
+  
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+  
+  // Relations
+  order         Order         @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  
+  @@map("payments")
+}
+
+model AdminUser {
+  id          String    @id @default(cuid())
+  email       String    @unique
+  name        String
+  password    String    // Hashed password
+  role        AdminRole @default(STAFF)
+  phone       String?
+  isActive    Boolean   @default(true)
+  lastLoginAt DateTime?
+  
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  
+  @@map("admin_users")
+}
+
+model SystemSetting {
+  id    String @id @default(cuid())
+  key   String @unique
+  value String
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  @@map("system_settings")
+}
+
+// Enums
+enum Category {
+  MAIN
+  SIDE
+  COMBO
+}
+
+enum OrderType {
+  PICKUP
+  DELIVERY
+}
+
+enum OrderStatus {
+  PENDING
+  CONFIRMED
+  PREPARING
+  READY
+  COMPLETED
+  CANCELLED
+}
+
+enum PaymentStatus {
+  PENDING
+  PROCESSING
+  COMPLETED
+  FAILED
+  REFUNDED
+}
+
+enum PaymentMethod {
+  CARD
+  PAYPAL
+  APPLE_PAY
+  GOOGLE_PAY
+  ZELLE
+  CASH
+}
+
+enum AdminRole {
+  ADMIN
+  MANAGER
+  STAFF
+}
