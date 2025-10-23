@@ -4,7 +4,8 @@ import {
   ClockIcon, 
   TruckIcon, 
   ShieldCheckIcon,
-  PhoneIcon 
+  PhoneIcon,
+  ArrowDownTrayIcon
 } from '@heroicons/react/24/outline';
 import { useEffect, useRef } from 'react';
 import QRCode from 'qrcode';
@@ -34,6 +35,29 @@ const HomePage = () => {
     
     generateQRCode();
   }, []);
+
+  const downloadQRCode = async () => {
+    try {
+      const menuUrl = `${window.location.origin}/menu`;
+      const qrCodeDataUrl = await QRCode.toDataURL(menuUrl, {
+        width: 300,
+        margin: 2,
+        color: {
+          dark: '#DC2626',
+          light: '#FFFFFF'
+        }
+      });
+      
+      const link = document.createElement('a');
+      link.href = qrCodeDataUrl;
+      link.download = 'menu-qr-code.png';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    } catch (error) {
+      console.error('Error downloading QR code:', error);
+    }
+  };
 
   const features = [
     {
@@ -126,6 +150,13 @@ const HomePage = () => {
                   <p className="text-xs text-gray-500">
                     Scan with your phone camera
                   </p>
+                  <button
+                    onClick={downloadQRCode}
+                    className="inline-flex items-center text-sm text-red-600 hover:text-red-700 mt-2 transition-colors"
+                  >
+                    <ArrowDownTrayIcon className="h-4 w-4 mr-1" />
+                    Download QR Code
+                  </button>
                 </div>
               </div>
             </div>

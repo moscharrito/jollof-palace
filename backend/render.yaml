@@ -18,16 +18,8 @@ services:
         generateValue: true
       - key: STRIPE_SECRET_KEY
         sync: false
-      - key: STRIPE_WEBHOOK_SECRET
-        sync: false
-      - key: PAYPAL_CLIENT_ID
-        sync: false
-      - key: PAYPAL_CLIENT_SECRET
-        sync: false
-      - key: FRONTEND_URL
-        value: https://your-frontend-app.vercel.app
       - key: CORS_ORIGIN
-        value: https://your-frontend-app.vercel.app
+        sync: false
 
 databases:
   - name: jollof-palace-db
