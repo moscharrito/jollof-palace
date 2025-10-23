@@ -7,8 +7,8 @@ jest.mock('../lib/database', () => ({
   prisma: mockPrisma,
 }));
 
-// Mock shared utilities
-jest.mock('@shared/utils', () => ({
+// Mock local utilities
+jest.mock('@/utils', () => ({
   generateOrderNumber: jest.fn(() => 'ORD-123456-ABC'),
   calculateOrderTotal: jest.fn(() => ({ tax: 22500, total: 322500 })),
   calculateEstimatedReadyTime: jest.fn(() => new Date('2024-01-01T12:30:00Z')),

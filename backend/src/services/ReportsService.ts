@@ -250,7 +250,7 @@ export class ReportsService extends BaseService {
           },
         },
         include: {
-          orderItems: {
+          items: {
             include: {
               menuItem: true,
             },
@@ -353,6 +353,8 @@ export class ReportsService extends BaseService {
       }>();
 
       orders.forEach(order => {
+        if (!order.customerEmail) return;
+        
         const existing = customerData.get(order.customerEmail) || {
           email: order.customerEmail,
           name: order.customerName || 'Unknown',
@@ -640,8 +642,11 @@ export class ReportsService extends BaseService {
     const revenueStats = { PICKUP: 0, DELIVERY: 0 };
     
     orders.forEach(order => {
-      typeStats[order.orderType]++;
-      revenueStats[order.orderType] += order.total;
+      const orderType = order.orderType as 'PICKUP' | 'DELIVERY';
+      if (orderType === 'PICKUP' || orderType === 'DELIVERY') {
+        typeStats[orderType]++;
+        revenueStats[orderType] += order.total;
+      }
     });
 
     const totalOrders = orders.length;

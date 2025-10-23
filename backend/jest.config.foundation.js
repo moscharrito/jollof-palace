@@ -15,7 +15,6 @@ module.exports = {
   ],
   moduleNameMapper: {
     '^@/(.*)$': '<rootDir>/src/$1',
-    '^@shared/(.*)$': '<rootDir>/../../packages/shared/src/$1',
   },
   testTimeout: 10000,
 };

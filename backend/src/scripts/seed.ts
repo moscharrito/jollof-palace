@@ -140,12 +140,18 @@ async function main() {
   ];
 
   for (const item of menuItems) {
-    const menuItem = await prisma.menuItem.upsert({
-      where: { name: item.name },
-      update: item,
-      create: item,
+    const existingItem = await prisma.menuItem.findFirst({
+      where: { name: item.name }
     });
-    console.log(`🍽️  Created menu item: ${menuItem.name}`);
+    
+    if (!existingItem) {
+      const menuItem = await prisma.menuItem.create({
+        data: item,
+      });
+      console.log(`🍽️  Created menu item: ${menuItem.name}`);
+    } else {
+      console.log(`🍽️  Menu item already exists: ${item.name}`);
+    }
   }
 
   // Create system settings
