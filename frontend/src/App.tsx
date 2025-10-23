@@ -26,6 +26,11 @@ const OrderManagementPage = lazy(() => import('./pages/admin/OrderManagementPage
 const MenuManagementPage = lazy(() => import('./pages/admin/MenuManagementPage'));
 
 function App() {
+  // Add some debugging for production
+  console.log('App component loaded');
+  console.log('Environment:', import.meta.env.MODE);
+  console.log('API URL:', import.meta.env.VITE_API_URL);
+
   return (
     <ErrorBoundary>
       <Suspense fallback={<LoadingSpinner />}>

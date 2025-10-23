@@ -1,7 +1,12 @@
 import axios from 'axios';
 // API configuration and interceptors
 
-const API_BASE_URL = (import.meta as any).env?.VITE_API_URL || 'http://localhost:3001/api';
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001/api';
+
+// Log API configuration in development
+if (import.meta.env.DEV) {
+  console.log('API Base URL:', API_BASE_URL);
+}
 
 // Create axios instance with default config
 const api = axios.create({
@@ -30,11 +35,22 @@ api.interceptors.request.use(
 api.interceptors.response.use(
   (response) => response,
   (error) => {
+    // Log errors in development
+    if (import.meta.env.DEV) {
+      console.error('API Error:', error);
+    }
+    
     if (error.response?.status === 401) {
       // Handle unauthorized access
       localStorage.removeItem('auth_token');
       window.location.href = '/admin/login';
     }
+    
+    // Don't fail the entire app if API is not available
+    if (error.code === 'ECONNREFUSED' || error.code === 'ERR_NETWORK') {
+      console.warn('API not available, running in offline mode');
+    }
+    
     return Promise.reject(error);
   }
 );
