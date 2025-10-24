@@ -1,50 +1,28 @@
-let redis: any = null;
+// No-op Redis implementation - Redis functionality disabled
+export const redis = null;
 
-function createRedisClient() {
-  if (!redis && process.env.REDIS_URL) {
-    const { createClient } = require('redis');
-    const redisUrl = process.env.REDIS_URL;
-    redis = createClient({
-      url: redisUrl,
-    });
-
-    redis.on('error', (err: any) => {
-      console.error('Redis Client Error:', err);
-    });
-
-    redis.on('connect', () => {
-      console.log('✅ Connected to Redis');
-    });
-  }
-  return redis;
-}
-
-export { redis };
-
-// Connect to Redis
+// No-op connect function
 export async function connectRedis() {
-  try {
-    if (!process.env.REDIS_URL) {
-      console.log('⚠️ Redis not configured, skipping Redis connection');
-      return;
-    }
-    
-    const redisClient = createRedisClient();
-    await redisClient.connect();
-  } catch (error) {
-    console.error('❌ Failed to connect to Redis:', error);
-    console.log('⚠️ Redis connection failed, continuing without cache');
-    return;
-  }
+  console.log('⚠️ Redis disabled - using in-memory cache fallback');
+  return;
 }
 
-// Cache helper functions
+// In-memory cache fallback (simple implementation for development)
+const memoryCache = new Map<string, { value: any; expires: number }>();
+
+// Cache helper functions with in-memory fallback
 export const cache = {
   async get<T>(key: string): Promise<T | null> {
     try {
-      if (!redis || !redis.isReady) return null;
-      const value = await redis.get(key);
-      return value ? JSON.parse(value) : null;
+      const cached = memoryCache.get(key);
+      if (!cached) return null;
+      
+      if (Date.now() > cached.expires) {
+        memoryCache.delete(key);
+        return null;
+      }
+      
+      return cached.value;
     } catch (error) {
       console.error('Cache get error:', error);
       return null;
@@ -53,8 +31,8 @@ export const cache = {
 
   async set(key: string, value: any, ttlSeconds: number = 3600): Promise<void> {
     try {
-      if (!redis || !redis.isReady) return;
-      await redis.setEx(key, ttlSeconds, JSON.stringify(value));
+      const expires = Date.now() + (ttlSeconds * 1000);
+      memoryCache.set(key, { value, expires });
     } catch (error) {
       console.error('Cache set error:', error);
     }
@@ -62,8 +40,7 @@ export const cache = {
 
   async del(key: string): Promise<void> {
     try {
-      if (!redis || !redis.isReady) return;
-      await redis.del(key);
+      memoryCache.delete(key);
     } catch (error) {
       console.error('Cache delete error:', error);
     }
@@ -71,9 +48,15 @@ export const cache = {
 
   async exists(key: string): Promise<boolean> {
     try {
-      if (!redis || !redis.isReady) return false;
-      const result = await redis.exists(key);
-      return result === 1;
+      const cached = memoryCache.get(key);
+      if (!cached) return false;
+      
+      if (Date.now() > cached.expires) {
+        memoryCache.delete(key);
+        return false;
+      }
+      
+      return true;
     } catch (error) {
       console.error('Cache exists error:', error);
       return false;

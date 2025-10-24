@@ -1,5 +1,4 @@
 import { Request, Response, NextFunction } from 'express';
-import { redis } from '../lib/redis';
 
 interface RateLimitOptions {
   windowMs: number; // Time window in milliseconds
@@ -8,6 +7,19 @@ interface RateLimitOptions {
   skipSuccessfulRequests?: boolean;
   skipFailedRequests?: boolean;
 }
+
+// In-memory store for rate limiting (simple implementation)
+const rateLimitStore = new Map<string, { count: number; resetTime: number }>();
+
+// Clean up expired entries periodically
+setInterval(() => {
+  const now = Date.now();
+  for (const [key, entry] of rateLimitStore.entries()) {
+    if (entry.resetTime <= now) {
+      rateLimitStore.delete(key);
+    }
+  }
+}, 60000); // Clean up every minute
 
 export function createRateLimiter(options: RateLimitOptions) {
   const {
@@ -21,36 +33,39 @@ export function createRateLimiter(options: RateLimitOptions) {
   return async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
       const key = `rate_limit:${keyGenerator(req)}`;
-      const window = Math.floor(Date.now() / windowMs);
-      const redisKey = `${key}:${window}`;
+      const now = Date.now();
+      const windowStart = Math.floor(now / windowMs) * windowMs;
+      const resetTime = windowStart + windowMs;
 
-      // Get current count
-      const current = await redis.get(redisKey);
-      const count = current ? parseInt(current, 10) : 0;
+      // Get or create rate limit entry
+      let entry = rateLimitStore.get(key);
+      
+      // Reset if window has passed
+      if (!entry || entry.resetTime <= now) {
+        entry = { count: 0, resetTime };
+        rateLimitStore.set(key, entry);
+      }
 
-      if (count >= maxRequests) {
+      if (entry.count >= maxRequests) {
         res.status(429).json({
           success: false,
           error: {
             code: 'RATE_LIMIT_EXCEEDED',
             message: 'Too many requests, please try again later',
-            retryAfter: Math.ceil(windowMs / 1000),
+            retryAfter: Math.ceil((resetTime - now) / 1000),
           },
         });
         return;
       }
 
       // Increment counter
-      await redis.multi()
-        .incr(redisKey)
-        .expire(redisKey, Math.ceil(windowMs / 1000))
-        .exec();
+      entry.count++;
 
       // Add rate limit headers
       res.set({
         'X-RateLimit-Limit': maxRequests.toString(),
-        'X-RateLimit-Remaining': (maxRequests - count - 1).toString(),
-        'X-RateLimit-Reset': (Date.now() + windowMs).toString(),
+        'X-RateLimit-Remaining': Math.max(0, maxRequests - entry.count).toString(),
+        'X-RateLimit-Reset': resetTime.toString(),
       });
 
       // Handle response tracking
@@ -61,9 +76,9 @@ export function createRateLimiter(options: RateLimitOptions) {
             (skipSuccessfulRequests && res.statusCode < 400) ||
             (skipFailedRequests && res.statusCode >= 400);
 
-          if (shouldSkip) {
+          if (shouldSkip && entry) {
             // Decrement counter if we should skip this request
-            redis.decr(redisKey).catch(console.error);
+            entry.count = Math.max(0, entry.count - 1);
           }
 
           return originalSend.call(this, body);
@@ -73,7 +88,7 @@ export function createRateLimiter(options: RateLimitOptions) {
       next();
     } catch (error) {
       console.error('Rate limiter error:', error);
-      // Continue without rate limiting if Redis is down
+      // Continue without rate limiting if there's an error
       next();
     }
   };

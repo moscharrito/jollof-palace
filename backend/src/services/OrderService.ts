@@ -2,7 +2,7 @@ import { Order, OrderStatus, OrderType, Prisma } from '@prisma/client';
 import { BaseService } from './BaseService';
 import { NotFoundError, BusinessLogicError, ValidationError } from '../middleware/errorHandler';
 import { getSocketManager } from '../lib/socket';
-import { NotificationService } from './NotificationService';
+
 // Temporary inline utilities until shared package is properly configured
 const BUSINESS_CONFIG = {
   TAX_RATE: 0.08, // 8% sales tax (US rate)
@@ -81,11 +81,10 @@ export interface OrderWithItems extends Order {
 }
 
 export class OrderService extends BaseService {
-  private notificationService: NotificationService;
+
 
   constructor() {
     super();
-    this.notificationService = new NotificationService();
   }
   async createOrder(data: CreateOrderData): Promise<OrderWithItems> {
     try {
@@ -398,12 +397,8 @@ export class OrderService extends BaseService {
         }
       }
 
-      // Send SMS notification
-      await this.notificationService.sendOrderStatusNotification(
-        updatedOrder,
-        status as OrderStatus,
-        actualReadyTime
-      );
+      // SMS notifications disabled
+      console.log(`Order ${id} status updated to ${status} - SMS notifications disabled`);
 
       return updatedOrder as OrderWithItems;
     } catch (error) {

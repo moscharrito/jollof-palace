@@ -5,10 +5,16 @@
   "main": "dist/index.js",
   "scripts": {
     "dev": "tsx watch src/index.ts",
-    "build": "tsc",
-    "build:full": "prisma generate && tsc",
+    "build": "node scripts/simple-build.js",
+    "build:full": "node scripts/simple-build.js",
+    "build:advanced": "node scripts/build.js",
+    "build:tsc": "tsc",
+    "build:fast": "node scripts/build.js --skip-prisma",
     "start": "node dist/index.js",
-    "postinstall": "prisma generate || echo 'Prisma generation failed, continuing...'",
+    "postinstall": "node scripts/prisma-postinstall.js",
+    "clean": "node scripts/clean.js",
+    "clean:all": "node scripts/clean.js --all",
+    "prisma:fix": "node scripts/windows-prisma-fix.js",
     "test": "jest",
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage",
@@ -18,7 +24,8 @@
     "db:seed": "tsx src/scripts/seed.ts",
     "db:reset": "prisma migrate reset --force",
     "lint": "eslint . --ext .ts --report-unused-disable-directives --max-warnings 0",
-    "lint:fix": "eslint . --ext .ts --fix"
+    "lint:fix": "eslint . --ext .ts --fix",
+    "test:startup": "node scripts/test-startup.js"
   },
   "dependencies": {
     "@prisma/client": "^5.1.1",
@@ -32,7 +39,7 @@
     "jsonwebtoken": "^9.0.1",
     "paypal-rest-sdk": "^1.8.1",
     "pdfkit": "^0.17.2",
-    "redis": "^4.6.7",
+
     "socket.io": "^4.7.2",
     "stripe": "^14.9.0",
     "winston": "^3.10.0",
