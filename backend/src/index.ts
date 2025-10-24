@@ -10,15 +10,37 @@ dotenv.config();
 
 const PORT = process.env.PORT || 3001;
 
+// Validate critical environment variables
+const requiredEnvVars = ['DATABASE_URL', 'JWT_SECRET'];
+const missingEnvVars = requiredEnvVars.filter(envVar => !process.env[envVar]);
+
+if (missingEnvVars.length > 0 && process.env.NODE_ENV === 'production') {
+  console.error('❌ Missing required environment variables:', missingEnvVars);
+  process.exit(1);
+}
+
 async function startServer() {
   try {
-    // Connect to Redis
-    await connectRedis();
-    console.log('✅ Redis connected successfully');
+    // Connect to Redis (optional)
+    try {
+      await connectRedis();
+      console.log('✅ Redis connected successfully');
+    } catch (redisError) {
+      console.warn('⚠️ Redis connection failed, continuing without cache:', redisError);
+    }
 
     // Test database connection
-    await prisma.$connect();
-    console.log('✅ Database connected successfully');
+    try {
+      await prisma.$connect();
+      console.log('✅ Database connected successfully');
+    } catch (dbError) {
+      console.error('❌ Database connection failed:', dbError);
+      if (process.env.NODE_ENV === 'production') {
+        console.error('💥 Cannot start server without database in production');
+        process.exit(1);
+      }
+      throw dbError;
+    }
 
     // Create HTTP server
     const server = createServer(app);

@@ -1,34 +1,40 @@
-import { createClient } from 'redis';
+let redis: any = null;
 
-const redisUrl = process.env.REDIS_URL || 'redis://localhost:6379';
+function createRedisClient() {
+  if (!redis && process.env.REDIS_URL) {
+    const { createClient } = require('redis');
+    const redisUrl = process.env.REDIS_URL;
+    redis = createClient({
+      url: redisUrl,
+    });
 
-export const redis = createClient({
-  url: redisUrl,
-});
+    redis.on('error', (err: any) => {
+      console.error('Redis Client Error:', err);
+    });
 
-redis.on('error', (err) => {
-  console.error('Redis Client Error:', err);
-});
+    redis.on('connect', () => {
+      console.log('✅ Connected to Redis');
+    });
+  }
+  return redis;
+}
 
-redis.on('connect', () => {
-  console.log('✅ Connected to Redis');
-});
+export { redis };
 
 // Connect to Redis
 export async function connectRedis() {
   try {
-    if (!process.env.REDIS_URL && process.env.NODE_ENV === 'production') {
-      console.log('⚠️ Redis not configured in production, skipping Redis connection');
+    if (!process.env.REDIS_URL) {
+      console.log('⚠️ Redis not configured, skipping Redis connection');
       return;
     }
-    await redis.connect();
+    
+    const redisClient = createRedisClient();
+    await redisClient.connect();
   } catch (error) {
     console.error('❌ Failed to connect to Redis:', error);
-    if (process.env.NODE_ENV === 'production') {
-      console.log('⚠️ Redis connection failed in production, continuing without cache');
-      return;
-    }
-    throw error;
+    console.log('⚠️ Redis connection failed, continuing without cache');
+    return;
   }
 }
 
@@ -36,7 +42,7 @@ export async function connectRedis() {
 export const cache = {
   async get<T>(key: string): Promise<T | null> {
     try {
-      if (!redis.isReady) return null;
+      if (!redis || !redis.isReady) return null;
       const value = await redis.get(key);
       return value ? JSON.parse(value) : null;
     } catch (error) {
@@ -47,7 +53,7 @@ export const cache = {
 
   async set(key: string, value: any, ttlSeconds: number = 3600): Promise<void> {
     try {
-      if (!redis.isReady) return;
+      if (!redis || !redis.isReady) return;
       await redis.setEx(key, ttlSeconds, JSON.stringify(value));
     } catch (error) {
       console.error('Cache set error:', error);
@@ -56,7 +62,7 @@ export const cache = {
 
   async del(key: string): Promise<void> {
     try {
-      if (!redis.isReady) return;
+      if (!redis || !redis.isReady) return;
       await redis.del(key);
     } catch (error) {
       console.error('Cache delete error:', error);
@@ -65,7 +71,7 @@ export const cache = {
 
   async exists(key: string): Promise<boolean> {
     try {
-      if (!redis.isReady) return false;
+      if (!redis || !redis.isReady) return false;
       const result = await redis.exists(key);
       return result === 1;
     } catch (error) {

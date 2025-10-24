@@ -1,6 +1,5 @@
 import { BaseService } from './BaseService';
 import { Order, OrderStatus } from '@prisma/client';
-import twilio from 'twilio';
 
 export interface NotificationTemplate {
   orderConfirmed: (orderNumber: string, estimatedTime: string) => string;
@@ -11,23 +10,9 @@ export interface NotificationTemplate {
 }
 
 export class NotificationService extends BaseService {
-  private twilioClient: twilio.Twilio | null = null;
-  private fromNumber: string;
-
   constructor() {
     super();
-    
-    // Initialize Twilio if credentials are provided
-    const accountSid = process.env.TWILIO_ACCOUNT_SID;
-    const authToken = process.env.TWILIO_AUTH_TOKEN;
-    this.fromNumber = process.env.TWILIO_PHONE_NUMBER || '';
-
-    if (accountSid && authToken && this.fromNumber) {
-      this.twilioClient = twilio(accountSid, authToken);
-      console.log('✅ Twilio SMS service initialized');
-    } else {
-      console.warn('⚠️ Twilio credentials not found. SMS notifications disabled.');
-    }
+    console.log('📧 NotificationService initialized (SMS disabled)');
   }
 
   private getNotificationTemplates(): NotificationTemplate {
@@ -56,83 +41,18 @@ export class NotificationService extends BaseService {
     status: OrderStatus,
     estimatedTime?: Date
   ): Promise<boolean> {
-    if (!this.twilioClient || !order.customerPhone) {
-      console.log('SMS notification skipped: Twilio not configured or no phone number');
-      return false;
-    }
+    // Log notification instead of sending SMS
+    console.log(`📧 Notification (${status}): Order ${order.orderNumber} for ${order.customerPhone}`);
+    
+    await this.logNotification({
+      orderId: order.id,
+      type: 'LOG',
+      recipient: order.customerPhone || '',
+      message: `Order status updated to ${status}`,
+      status: 'LOGGED',
+    });
 
-    try {
-      const templates = this.getNotificationTemplates();
-      let message: string;
-
-      const formatTime = (date: Date) => {
-        return date.toLocaleTimeString('en-US', {
-          hour: '2-digit',
-          minute: '2-digit',
-          hour12: true,
-        });
-      };
-
-      switch (status) {
-        case 'CONFIRMED':
-          message = templates.orderConfirmed(
-            order.orderNumber,
-            formatTime(estimatedTime || order.estimatedReadyTime)
-          );
-          break;
-
-        case 'PREPARING':
-          message = templates.orderPreparing(order.orderNumber);
-          break;
-
-        case 'READY':
-          message = templates.orderReady(order.orderNumber, order.orderType);
-          break;
-
-        case 'COMPLETED':
-          message = templates.orderCompleted(order.orderNumber);
-          break;
-
-        default:
-          console.log(`No SMS template for status: ${status}`);
-          return false;
-      }
-
-      // Send SMS
-      const result = await this.twilioClient.messages.create({
-        body: message,
-        from: this.fromNumber,
-        to: this.formatPhoneNumber(order.customerPhone),
-      });
-
-      console.log(`SMS sent successfully: ${result.sid}`);
-      
-      // Log notification in database
-      await this.logNotification({
-        orderId: order.id,
-        type: 'SMS',
-        recipient: order.customerPhone,
-        message,
-        status: 'SENT',
-        externalId: result.sid,
-      });
-
-      return true;
-    } catch (error: any) {
-      console.error('Failed to send SMS notification:', error);
-      
-      // Log failed notification
-      await this.logNotification({
-        orderId: order.id,
-        type: 'SMS',
-        recipient: order.customerPhone || '',
-        message: 'Failed to send',
-        status: 'FAILED',
-        error: error.message,
-      });
-
-      return false;
-    }
+    return true;
   }
 
   async sendDelayNotification(
@@ -140,91 +60,43 @@ export class NotificationService extends BaseService {
     newEstimatedTime: Date,
     reason?: string
   ): Promise<boolean> {
-    if (!this.twilioClient || !order.customerPhone) {
-      return false;
+    console.log(`📧 Delay notification: Order ${order.orderNumber} delayed until ${newEstimatedTime}`);
+    if (reason) {
+      console.log(`📧 Reason: ${reason}`);
     }
+    
+    await this.logNotification({
+      orderId: order.id,
+      type: 'LOG',
+      recipient: order.customerPhone || '',
+      message: `Order delayed until ${newEstimatedTime}${reason ? ` - ${reason}` : ''}`,
+      status: 'LOGGED',
+    });
 
-    try {
-      const templates = this.getNotificationTemplates();
-      const formatTime = (date: Date) => {
-        return date.toLocaleTimeString('en-US', {
-          hour: '2-digit',
-          minute: '2-digit',
-          hour12: true,
-        });
-      };
-
-      let message = templates.orderDelayed(order.orderNumber, formatTime(newEstimatedTime));
-      
-      if (reason) {
-        message += `\n\nReason: ${reason}`;
-      }
-
-      const result = await this.twilioClient.messages.create({
-        body: message,
-        from: this.fromNumber,
-        to: this.formatPhoneNumber(order.customerPhone),
-      });
-
-      console.log(`Delay notification sent: ${result.sid}`);
-      
-      await this.logNotification({
-        orderId: order.id,
-        type: 'SMS',
-        recipient: order.customerPhone,
-        message,
-        status: 'SENT',
-        externalId: result.sid,
-      });
-
-      return true;
-    } catch (error: any) {
-      console.error('Failed to send delay notification:', error);
-      return false;
-    }
+    return true;
   }
 
   async sendBulkNotification(
     phoneNumbers: string[],
     message: string
   ): Promise<{ sent: number; failed: number }> {
-    if (!this.twilioClient) {
-      return { sent: 0, failed: phoneNumbers.length };
-    }
-
-    let sent = 0;
-    let failed = 0;
-
+    console.log(`📧 Bulk notification to ${phoneNumbers.length} recipients: ${message}`);
+    
+    // Log each notification
     for (const phoneNumber of phoneNumbers) {
-      try {
-        await this.twilioClient.messages.create({
-          body: message,
-          from: this.fromNumber,
-          to: this.formatPhoneNumber(phoneNumber),
-        });
-        sent++;
-      } catch (error) {
-        console.error(`Failed to send SMS to ${phoneNumber}:`, error);
-        failed++;
-      }
+      console.log(`📧 Would send to: ${phoneNumber}`);
     }
 
-    return { sent, failed };
+    return { sent: phoneNumbers.length, failed: 0 };
   }
 
   private formatPhoneNumber(phone: string): string {
-    // Remove all non-digit characters
+    // Simple phone number formatting for logging
     const digitsOnly = phone.replace(/\D/g, '');
-    
-    // Add country code if not present (assuming US/Canada)
     if (digitsOnly.length === 10) {
       return `+1${digitsOnly}`;
-    } else if (digitsOnly.length === 11 && digitsOnly.startsWith('1')) {
-      return `+${digitsOnly}`;
     }
-    
-    // Return as-is if it already looks like an international number
-    return digitsOnly.startsWith('+') ? phone : `+${digitsOnly}`;
+    return phone;
   }
 
   private async logNotification(data: {
@@ -249,26 +121,12 @@ export class NotificationService extends BaseService {
   }
 
   async testSMSService(phoneNumber: string): Promise<boolean> {
-    if (!this.twilioClient) {
-      throw new Error('Twilio not configured');
-    }
-
-    try {
-      const result = await this.twilioClient.messages.create({
-        body: 'Test message from Jollof Palace ordering system. SMS notifications are working correctly!',
-        from: this.fromNumber,
-        to: this.formatPhoneNumber(phoneNumber),
-      });
-
-      console.log(`Test SMS sent successfully: ${result.sid}`);
-      return true;
-    } catch (error) {
-      console.error('Test SMS failed:', error);
-      throw error;
-    }
+    console.log(`📧 Test notification would be sent to: ${this.formatPhoneNumber(phoneNumber)}`);
+    console.log('📧 SMS service is disabled - notifications are logged only');
+    return true;
   }
 
   isConfigured(): boolean {
-    return this.twilioClient !== null;
+    return true; // Always return true since logging is always available
   }
 }

@@ -5,7 +5,6 @@ import paymentRoutes from './paymentRoutes';
 import adminRoutes from './adminRoutes';
 import analyticsRoutes from './analyticsRoutes';
 import reportsRoutes from './reportsRoutes';
-import notificationRoutes from './notificationRoutes';
 
 const router = Router();
 
@@ -16,7 +15,6 @@ router.use('/payments', paymentRoutes);
 router.use('/admin', adminRoutes);
 router.use('/admin/analytics', analyticsRoutes);
 router.use('/admin/reports', reportsRoutes);
-router.use('/notifications', notificationRoutes);
 
 // API info endpoint
 router.get('/', (req, res) => {
@@ -31,7 +29,6 @@ router.get('/', (req, res) => {
       admin: '/api/admin',
       analytics: '/api/admin/analytics',
       reports: '/api/admin/reports',
-      notifications: '/api/notifications',
     },
     documentation: 'https://github.com/your-repo/food-ordering-system',
   });
