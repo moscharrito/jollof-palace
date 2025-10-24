@@ -5,12 +5,14 @@
   "main": "dist/index.js",
   "scripts": {
     "dev": "tsx watch src/index.ts",
-    "build": "node scripts/simple-build.js",
-    "build:full": "node scripts/simple-build.js",
+    "build": "node scripts/vercel-build.js",
+    "build:full": "node scripts/vercel-build.js",
+    "build:simple": "node scripts/simple-build.js",
     "build:advanced": "node scripts/build.js",
     "build:tsc": "tsc",
     "build:fast": "node scripts/build.js --skip-prisma",
-    "start": "node dist/index.js",
+    "start": "node scripts/production-start.js",
+    "start:direct": "node dist/index.js",
     "postinstall": "node scripts/prisma-postinstall.js",
     "clean": "node scripts/clean.js",
     "clean:all": "node scripts/clean.js --all",
@@ -43,7 +45,9 @@
     "socket.io": "^4.7.2",
     "stripe": "^14.9.0",
     "winston": "^3.10.0",
-    "xlsx": "^0.18.5"
+    "xlsx": "^0.18.5",
+    "typescript": "^5.1.6",
+    "prisma": "^5.1.1"
   },
   "devDependencies": {
     "@types/bcryptjs": "^2.4.2",
@@ -58,10 +62,8 @@
     "@typescript-eslint/parser": "^6.21.0",
     "eslint": "^8.45.0",
     "jest": "^29.6.1",
-    "prisma": "^5.1.1",
     "supertest": "^6.3.3",
     "ts-jest": "^29.1.1",
-    "tsx": "^3.12.7",
-    "typescript": "^5.1.6"
+    "tsx": "^3.12.7"
   }
 }
