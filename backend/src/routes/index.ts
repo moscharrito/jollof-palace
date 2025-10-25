@@ -1,4 +1,4 @@
-import { Router } from 'express';
+import { Router, Request, Response } from 'express';
 import menuRoutes from './menuRoutes';
 import orderRoutes from './orderRoutes';
 import paymentRoutes from './paymentRoutes';
@@ -15,7 +15,7 @@ router.use('/admin', adminRoutes);
 // Analytics and reports routes removed
 
 // API info endpoint
-router.get('/', (req, res) => {
+router.get('/', (req: Request, res: Response) => {
   res.json({
     success: true,
     message: 'Food Ordering API',

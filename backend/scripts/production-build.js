@@ -11,6 +11,11 @@ try {
   const projectRoot = path.join(__dirname, '..');
   process.chdir(projectRoot);
   
+  // Verify type definitions
+  console.log('🔍 Verifying type definitions...');
+  execSync('node scripts/verify-types.js', { stdio: 'inherit' });
+  console.log('✅ Type definitions verified');
+  
   // Clean previous build
   if (fs.existsSync('dist')) {
     fs.rmSync('dist', { recursive: true, force: true });
