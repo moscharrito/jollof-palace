@@ -75,7 +75,11 @@ try {
     throw new Error('tsconfig.json not found at: ' + tsconfigPath);
   }
   
-  execSync('npx tsc', {
+  // Use production TypeScript config if available, otherwise use default
+  const prodTsconfigPath = path.join(projectRoot, 'tsconfig.prod.json');
+  const tsconfigFlag = fs.existsSync(prodTsconfigPath) ? '--project tsconfig.prod.json' : '';
+  
+  execSync(`npx tsc ${tsconfigFlag}`, {
     stdio: 'inherit',
     cwd: projectRoot
   });
