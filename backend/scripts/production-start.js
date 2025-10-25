@@ -2,6 +2,9 @@
 
 const path = require('path');
 
+// Load environment variables from .env file
+require('dotenv').config({ path: path.join(__dirname, '..', '.env') });
+
 // Set production environment
 process.env.NODE_ENV = process.env.NODE_ENV || 'production';
 

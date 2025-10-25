@@ -3,8 +3,7 @@ import menuRoutes from './menuRoutes';
 import orderRoutes from './orderRoutes';
 import paymentRoutes from './paymentRoutes';
 import adminRoutes from './adminRoutes';
-import analyticsRoutes from './analyticsRoutes';
-import reportsRoutes from './reportsRoutes';
+// Analytics and reports routes removed
 
 const router = Router();
 
@@ -13,8 +12,7 @@ router.use('/menu', menuRoutes);
 router.use('/orders', orderRoutes);
 router.use('/payments', paymentRoutes);
 router.use('/admin', adminRoutes);
-router.use('/admin/analytics', analyticsRoutes);
-router.use('/admin/reports', reportsRoutes);
+// Analytics and reports routes removed
 
 // API info endpoint
 router.get('/', (req, res) => {
@@ -27,8 +25,7 @@ router.get('/', (req, res) => {
       orders: '/api/orders',
       payments: '/api/payments',
       admin: '/api/admin',
-      analytics: '/api/admin/analytics',
-      reports: '/api/admin/reports',
+      // Analytics and reports endpoints removed
     },
     documentation: 'https://github.com/your-repo/food-ordering-system',
   });
