@@ -90,7 +90,7 @@ export class OrderService extends BaseService {
     try {
       return await this.executeTransaction(async (tx) => {
         // Validate menu items and calculate totals
-        const orderItems = [];
+        const orderItems: any[] = [];
         let subtotal = 0;
         const preparationTimes: number[] = [];
 
