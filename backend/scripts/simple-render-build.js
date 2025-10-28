@@ -16,9 +16,18 @@ try {
     fs.rmSync('dist', { recursive: true });
   }
   
-  // Ultra-permissive TypeScript compilation
+  // Check if TypeScript is available
+  console.log('🔍 Checking TypeScript installation...');
+  try {
+    execSync('npx tsc --version', { stdio: 'inherit' });
+  } catch (tscError) {
+    console.log('⚠️ TypeScript not found via npx, trying direct installation...');
+    execSync('npm install typescript --no-save', { stdio: 'inherit' });
+  }
+  
+  // Compile TypeScript using production config
   console.log('🔨 Compiling TypeScript...');
-  execSync('npx tsc --skipLibCheck --noImplicitAny false --noImplicitReturns false --noImplicitThis false --strictNullChecks false --strictFunctionTypes false --strictBindCallApply false --strictPropertyInitialization false --noImplicitOverride false --allowUnreachableCode --allowUnusedLabels --suppressImplicitAnyIndexErrors --outDir dist --rootDir src --target ES2020 --module commonjs --esModuleInterop --resolveJsonModule', { 
+  execSync('npx tsc --project tsconfig.prod.json', { 
     stdio: 'inherit' 
   });
   
@@ -29,7 +38,7 @@ try {
   // If TypeScript fails, try with even more permissive settings
   console.log('🔄 Trying with maximum permissive settings...');
   try {
-    execSync('npx tsc --noEmitOnError false --skipLibCheck --noImplicitAny false --outDir dist --rootDir src --target ES2020 --module commonjs', { 
+    execSync('npx tsc --noEmitOnError false --skipLibCheck --outDir dist --rootDir src --target ES2020 --module commonjs', { 
       stdio: 'inherit' 
     });
     console.log('✅ Build completed with warnings!');
